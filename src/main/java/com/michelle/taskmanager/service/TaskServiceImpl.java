@@ -1,7 +1,9 @@
 package com.michelle.taskmanager.service;
 
 import com.michelle.taskmanager.entity.Task;
+import com.michelle.taskmanager.entity.User;
 import com.michelle.taskmanager.repository.TaskRepository;
+import com.michelle.taskmanager.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,7 @@ import java.util.List;
 @Service
 public class TaskServiceImpl implements TaskService{
     private TaskRepository taskRepository;
+    private UserRepository userRepository;
 
     @Override
     public List<Task> getAllTasks() {
@@ -25,8 +28,11 @@ public class TaskServiceImpl implements TaskService{
     }
 
     @Override
-    public Task createTask(Task task) {
-        // Add any business logic or validation if needed
+    public Task createTask(Task task, String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with username: " + username));
+
+        task.setUser(user);
         return taskRepository.save(task);
     }
 
@@ -50,5 +56,10 @@ public class TaskServiceImpl implements TaskService{
         getTaskById(taskId);
 
         taskRepository.deleteById(taskId);
+    }
+
+    @Override
+    public List<Task> getTasksByUsername(String username) {
+        return taskRepository.findByUserUsername(username);
     }
 }
