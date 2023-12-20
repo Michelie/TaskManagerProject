@@ -1,19 +1,19 @@
 package com.michelle.taskmanager.service;
 
-import com.michelle.taskmanager.entity.Person;
 import com.michelle.taskmanager.entity.Task;
+import com.michelle.taskmanager.entity.TaskStatus;
 
 import java.util.List;
 import java.util.Set;
 
 public interface TaskService {
-    List<Task> getAllTasks();
-    Task getTask(Long id);
     Task saveTask(Task task);
-    void deleteTask(Long id);
-    Task addPersonToTask(Long personId, Long taskId);
+    List<Task> getAllTasks();
+    Task getTaskById(Long id);
+    List<Task> getTasksByStatus(TaskStatus status);
+    List<Task> getTasksByDashboardId(Long dashboardId);
+    void deleteTask(Long taskId);
 
-    Set<Person> getPersonsForTask(Long id);
 
 
 }

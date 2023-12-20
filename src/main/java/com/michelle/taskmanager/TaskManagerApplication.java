@@ -1,7 +1,10 @@
 package com.michelle.taskmanager;
 
+import com.michelle.taskmanager.entity.Dashboard;
 import com.michelle.taskmanager.entity.Task;
+import com.michelle.taskmanager.entity.TaskStatus;
 import com.michelle.taskmanager.repository.TaskRepository;
+import com.michelle.taskmanager.service.DashboardService;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -13,22 +16,31 @@ import java.time.LocalDate;
 public class TaskManagerApplication implements CommandLineRunner {
 
 	TaskRepository taskRepository;
-	UserRepository userRepository;
+	DashboardService dashboardService;
 	public static void main(String[] args) {
 		SpringApplication.run(TaskManagerApplication.class, args);
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
-		Task[] tasks = new Task[] {
-				new Task("Task1", "Description 1", LocalDate.now(), false),
-				new Task("Task2", "Description 2", LocalDate.now(), false),
-				new Task("Task3", "Description 3", LocalDate.now(), false)
-		};
 
-		for (int i = 0; i < tasks.length; i++) {
-			taskRepository.save(tasks[i]);
-		}
+		Dashboard dashboard = new Dashboard();
+		dashboard.setName("Default Dashboard");
+		dashboard.setDescription("Default description");
+
+		// Save the dashboard
+		dashboard = dashboardService.saveDashboard(dashboard);
+//		Task[] tasks = new Task[]{
+//				new Task("Task 1", "description 1", TaskStatus.DONE, dashboard),
+//				new Task("Task 2", "description 2", TaskStatus.IN_PROGRESS, dashboard),
+//				new Task("Task 3", "description 3", TaskStatus.DONE, dashboard),
+//				new Task("Task 4", "description 4", TaskStatus.TODO, dashboard)
+//		};
+//
+//		for (int i = 0; i < tasks.length; i++) {
+//			taskRepository.save(tasks[i]);
+//		}
+
 
 	}
 

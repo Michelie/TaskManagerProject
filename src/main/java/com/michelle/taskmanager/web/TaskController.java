@@ -1,55 +1,53 @@
 package com.michelle.taskmanager.web;
 
 import com.michelle.taskmanager.entity.Task;
+import com.michelle.taskmanager.entity.TaskStatus;
 import com.michelle.taskmanager.service.TaskService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/tasks")
+@RequestMapping("/task")
 public class TaskController {
 
     private TaskService taskService;
 
     @PostMapping
-    public ResponseEntity<Task> createTask(@RequestBody Task task, @RequestParam("username") String username) {
-        Task createdTask = taskService.createTask(task, username);
-        return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
+    public ResponseEntity<Task> createTask(@RequestBody Task task) {
+        return new ResponseEntity<>(taskService.saveTask(task), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Task> getTaskById(@PathVariable Long id) {
-        Task task = taskService.getTaskById(id);
-        return new ResponseEntity<>(task, HttpStatus.OK);
+    public ResponseEntity<Task> getTask(@PathVariable Long id) {
+        return new ResponseEntity<>(taskService.getTaskById(id), HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<Task>> getTasksByStatus(@PathVariable TaskStatus status) {
+        return new ResponseEntity<>(taskService.getTasksByStatus(status), HttpStatus.OK);
+    }
+
+    @GetMapping("/dashboard/{dashboardId}")
+    public ResponseEntity<List<Task>> getTasksByDashboardId(@PathVariable Long dashboardId) {
+        return new ResponseEntity<>(taskService.getTasksByDashboardId(dashboardId), HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
     public ResponseEntity<List<Task>> getAllTasks() {
-        List<Task> tasks = taskService.getAllTasks();
-        return new ResponseEntity<>(tasks, HttpStatus.OK);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task task) {
-        Task updatedTask = taskService.updateTask(id, task);
-        return new ResponseEntity<>(updatedTask, HttpStatus.OK);
+        return new ResponseEntity<>(taskService.getAllTasks(), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+    public ResponseEntity<String> deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/by-user")
-    public ResponseEntity<List<Task>> getTasksByUsername(@RequestParam("username") String username) {
-        List<Task> tasks = taskService.getTasksByUsername(username);
-        return new ResponseEntity<>(tasks, HttpStatus.OK);
-    }
 }
