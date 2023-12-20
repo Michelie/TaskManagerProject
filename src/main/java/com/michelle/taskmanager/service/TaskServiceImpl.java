@@ -2,21 +2,20 @@ package com.michelle.taskmanager.service;
 
 import com.michelle.taskmanager.entity.Dashboard;
 import com.michelle.taskmanager.entity.Task;
-import com.michelle.taskmanager.entity.TaskStatus;
 import com.michelle.taskmanager.exception.TaskNotFoundException;
 import com.michelle.taskmanager.repository.TaskRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @AllArgsConstructor
 @Service
 public class TaskServiceImpl implements TaskService {
     private TaskRepository taskRepository;
+    DashboardService dashboardService;
     @Override
     public Task saveTask(Task task) {
         return taskRepository.save(task);
@@ -33,8 +32,14 @@ public class TaskServiceImpl implements TaskService {
         return unwrapTask(task, id);
     }
 
+//    @Override
+//    public List<Task> getTasksByStatus(TaskStatus status) {
+//        return taskRepository.findByStatus(status);
+//    }
+
+
     @Override
-    public List<Task> getTasksByStatus(TaskStatus status) {
+    public List<Task> getTasksByStatus(String status) {
         return taskRepository.findByStatus(status);
     }
 
@@ -46,6 +51,25 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void deleteTask(Long taskId) {
         taskRepository.deleteById(taskId);
+    }
+
+    @Override
+    @Transactional
+    public Task updateTaskDashboard(Long taskId, Long dashboardId) {
+        Task task = getTaskById(taskId);
+        Dashboard dashboard = dashboardService.getDashboardById(dashboardId);
+
+        task.setDashboard(dashboard);
+        return taskRepository.save(task);
+    }
+
+    @Override
+    @Transactional
+    public Task updateTaskStatus(Long taskId, String newStatus) {
+        Task task = getTaskById(taskId);
+
+        task.setStatus(newStatus);
+        return taskRepository.save(task);
     }
 
     static Task unwrapTask(Optional<Task> entity, Long id) {

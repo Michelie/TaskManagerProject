@@ -2,16 +2,10 @@ package com.michelle.taskmanager.entity;
 
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.michelle.taskmanager.validation.Status;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
-
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -36,15 +30,18 @@ public class Task {
     private String description;
 
 
-    @Enumerated(EnumType.STRING)
-    @NotNull(message = "status cannot be blank")
+//    @Enumerated(EnumType.STRING)
+//    @EnumValid(enumClass = TaskStatus.class)
+//    @Column(name = "status", nullable = false)
+//    private TaskStatus status;
+
+    @Status
     @NonNull
     @Column(name = "status", nullable = false)
-    private TaskStatus status;
+    private String status;
 
-    @NonNull
     @ManyToOne
-    @JoinColumn(name = "dashboard_id", nullable = false)
+    @JoinColumn(name = "dashboard_id")
     private Dashboard dashboard;
 
 }

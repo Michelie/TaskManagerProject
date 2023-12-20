@@ -1,16 +1,14 @@
 package com.michelle.taskmanager;
 
 import com.michelle.taskmanager.entity.Dashboard;
-import com.michelle.taskmanager.entity.Task;
-import com.michelle.taskmanager.entity.TaskStatus;
 import com.michelle.taskmanager.repository.TaskRepository;
 import com.michelle.taskmanager.service.DashboardService;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.time.LocalDate;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication @AllArgsConstructor
 public class TaskManagerApplication implements CommandLineRunner {
@@ -42,6 +40,12 @@ public class TaskManagerApplication implements CommandLineRunner {
 //		}
 
 
+
 	}
+	@Bean
+	public BCryptPasswordEncoder bCryptPasswordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
 
 }
